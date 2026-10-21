@@ -12,14 +12,20 @@ spec.loader.exec_module(exporter)
 def test_export_omits_runtime_files_and_git_history(tmp_path):
     root = tmp_path / "source"
     root.mkdir()
-    for name in exporter.ROOT_FILES | {
-        "docs/DATA.md",
+    for name in exporter.ROOT_FILES | exporter.DOC_FILES | {
         "scripts/export_public.py",
         "scripts/check_public_tree.py",
+        "scripts/render_demo.py",
+        ".github/dependabot.yml",
     }:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text("public fixture\n", encoding="utf8")
+    for name in exporter.PREVIEW_IMAGES:
+        target = root / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(b"\x89PNG\r\n\x1a\nsynthetic fixture")
+    (root / "README.md").write_text("https://www.sse.com.cn/home/legal/\n", encoding="utf8")
     for name in ["private/ssot/raw.json", ".git/config", "reports/account.html", "tests/test_real_replay.py"]:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -30,7 +36,18 @@ def test_export_omits_runtime_files_and_git_history(tmp_path):
     assert not (destination / ".git").exists()
     assert not (destination / "reports").exists()
     assert not (destination / "tests/test_real_replay.py").exists()
-    assert all("PRIVATE_SENTINEL" not in p.read_text("utf8") for p in destination.rglob("*") if p.is_file())
+    assert all(b"PRIVATE_SENTINEL" not in p.read_bytes() for p in destination.rglob("*") if p.is_file())
+    for name in exporter.PREVIEW_IMAGES:
+        assert (destination / name).read_bytes() == (root / name).read_bytes()
+    image = root / sorted(exporter.PREVIEW_IMAGES)[0]
+    image.write_bytes(b"not a PNG")
+    with pytest.raises(ValueError, match="Invalid preview PNG"):
+        exporter.export_public(root, tmp_path / "rejected-image")
+    assert not (tmp_path / "rejected-image").exists()
+    image.write_bytes(b"\x89PNG\r\n\x1a\nsynthetic fixture")
+    (root / "README.md").write_text("/" + "home/example/account.csv", encoding="utf8")
+    with pytest.raises(ValueError, match="absolute home path"):
+        exporter.export_public(root, tmp_path / "rejected-home")
     (root / "README.md").write_text("sk-" + "x" * 30, encoding="utf8")
     with pytest.raises(ValueError, match="credential"):
         exporter.export_public(root, tmp_path / "rejected")

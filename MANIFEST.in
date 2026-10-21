@@ -1,6 +1,7 @@
-include README.md README.zh-CN.md LICENSE SECURITY.md CONTRIBUTING.md requirements.lock
+include README.md README.zh-CN.md LICENSE SECURITY.md CONTRIBUTING.md CHANGELOG.md requirements.lock
 recursive-include docs *.md
-include scripts/check_public_tree.py scripts/export_public.py
+recursive-include docs/demo *.png
+include scripts/check_public_tree.py scripts/export_public.py scripts/render_demo.py
 recursive-include tests *.py
 exclude tests/test_real_replay.py
 prune private
