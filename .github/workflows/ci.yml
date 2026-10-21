@@ -1,0 +1,42 @@
+name: quality
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -c requirements.lock -e '.[dev]'
+      - run: python -m compileall -q src
+      - run: python -m ruff check src tests scripts
+      - run: python -m ruff format --check src tests scripts
+      - run: python -m pytest -q
+      - run: python scripts/check_public_tree.py
+      - run: python scripts/export_public.py --destination public-export
+      - run: python -m build public-export --outdir dist
+      - name: Test installed wheel outside the source checkout
+        shell: python
+        run: |
+          import os, pathlib, subprocess, sys, tempfile
+          wheel = next(pathlib.Path("dist").glob("*.whl")).resolve()
+          subprocess.run([sys.executable, "-m", "pip", "install", "--force-reinstall", "--no-deps", str(wheel)], check=True)
+          clean = pathlib.Path(tempfile.mkdtemp())
+          destination = clean / "demo"
+          subprocess.run([sys.executable, "-m", "portfolio_lab.cli", "demo", "--destination", str(destination)], cwd=clean, check=True)
+          import json
+          latest = json.loads((destination / "private/latest.json").read_text())
+          manifest = destination / "private/runs" / latest["run_id"] / "manifest.json"
+          subprocess.run([sys.executable, "-m", "portfolio_lab.cli", "verify", str(manifest), "--root", str(destination)], cwd=clean, check=True)
+          subprocess.run([sys.executable, "-m", "portfolio_lab.cli", "replay", str(manifest), "--root", str(destination), "--destination", str(clean / "replay")], cwd=clean, check=True)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-source-${{ matrix.os }}
+          path: public-export/

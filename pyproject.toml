@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "portfolio-evidence-lab"
+version = "0.1.0"
+description = "Auditable fund look-through and constrained portfolio research"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2.0,<3", "pandas>=2.2,<4", "scipy>=1.14,<2", "scikit-learn>=1.5,<2", "requests>=2.32,<3", "pydantic>=2.9,<3", "pypdf>=6,<7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.11", "build>=1.2"]
+
+[project.scripts]
+portfolio-lab = "portfolio_lab.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
