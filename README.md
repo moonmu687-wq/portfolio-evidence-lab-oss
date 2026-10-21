@@ -72,9 +72,7 @@ Tests exercise mathematical reconciliations, input failures, the production demo
 
 ## Privacy and data
 
-Public examples and screenshots use synthetic data or data with documented reuse permission. The public export excludes runtime evidence, reports, account configuration and Git history. See [security and data policy](SECURITY.md).
-
-The code is MIT licensed. Third-party data keeps its own terms. Source adapters do not grant data access or redistribution rights.
+Public examples and screenshots use synthetic data or data with documented reuse permission. Source adapters do not grant data access or redistribution rights.
 
 ## Related projects
 
