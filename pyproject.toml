@@ -13,6 +13,13 @@ dependencies = ["numpy>=2.0,<3", "pandas>=2.2,<4", "scipy>=1.14,<2", "scikit-lea
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "ruff>=0.11", "build>=1.2"]
+preview = ["playwright==1.56.0"]
+
+[project.urls]
+Homepage = "https://github.com/moonmu687-wq/portfolio-evidence-lab-oss"
+Documentation = "https://github.com/moonmu687-wq/portfolio-evidence-lab-oss#readme"
+Issues = "https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/issues"
+Changelog = "https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/blob/main/CHANGELOG.md"
 
 [project.scripts]
 portfolio-lab = "portfolio_lab.cli:main"

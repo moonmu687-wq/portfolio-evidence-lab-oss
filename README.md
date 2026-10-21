@@ -1,17 +1,34 @@
 # Portfolio Evidence Lab
 
+[![Quality](https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/actions/workflows/ci.yml/badge.svg)](https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/actions/workflows/ci.yml)
+[![Python 3.12 and 3.13](https://img.shields.io/badge/Python-3.12%20%7C%203.13-blue)](pyproject.toml)
+[![MIT license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/moonmu687-wq/portfolio-evidence-lab-oss)](https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/releases/latest)
+
 Reproducible fund look-through and portfolio risk research.
 
 Know what you own, where your risk comes from, and what the data cannot tell you.
 
 [中文说明](README.zh-CN.md)
 
+## See the report before installing
+
+Download the [standalone HTML report](https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/releases/latest/download/Portfolio_Decision_Report.html) and open it in a browser. Download the [report and CSV bundle](https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/releases/latest/download/synthetic-demo.zip) to use its data links. Reading either report needs no Python installation.
+
+![Production report overview, labeled as a synthetic demonstration](docs/demo/report-overview.png)
+
+The example identifies 71.9% of underlying NAV and preserves 28.1% as unknown. Fund 990001 has a 35% capital weight but contributes about 49% of estimated volatility risk.
+
+![Synthetic capital weights and volatility risk contributions](docs/demo/report-weights.png)
+
+These are captures of the generated report, not a separate interface. All four products, prices, holdings, and amounts are fictional. See [preview details](docs/demo/README.md).
+
 ## Try it offline
 
 Use Python 3.12 or later in a virtual environment. From a source checkout:
 
 ```sh
-python -m pip install -e .
+python -m pip install -c requirements.lock .
 portfolio-lab demo --destination demo-workspace
 ```
 
@@ -70,9 +87,24 @@ python -m build
 
 Tests exercise mathematical reconciliations, input failures, the production demo path, replay and tamper detection. See [contributing](CONTRIBUTING.md).
 
+CI tests Python 3.12 and 3.13 on Linux and Windows. `scikit-learn` supplies the Ledoit-Wolf estimator used by the risk engine.
+
+## Download a version
+
+[Releases](https://github.com/moonmu687-wq/portfolio-evidence-lab-oss/releases/latest) contain a wheel, source distribution, synthetic report bundle, standalone HTML, and SHA-256 checksums. See the [changelog](CHANGELOG.md) and [maintenance instructions](docs/MAINTENANCE.md). Releases are built from a commit that passed the full quality workflow. PyPI publishing is not configured.
+
+To install a downloaded wheel in a virtual environment:
+
+```sh
+python -m pip install portfolio_evidence_lab-0.1.0-py3-none-any.whl
+portfolio-lab demo --destination demo-workspace
+```
+
 ## Privacy and data
 
 Public examples and screenshots use synthetic data or data with documented reuse permission. Source adapters do not grant data access or redistribution rights.
+
+The [source register](docs/DATA_SOURCES.md) records reviewed notices, unresolved permissions, and publication boundaries. The public demo and release generation do not call live adapters.
 
 ## Related projects
 
