@@ -30,9 +30,7 @@ RULES = {
     "private key": r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
     "account sheet": r"docs\.google\.com/spreadsheets/d/[A-Za-z0-9_-]{20,}",
     "absolute home path": (
-        r"(?<![A-Za-z0-9:/.])(?:[A-Za-z]:[\\/]Users[\\/][^\\/\s]+|"
-        + "/"
-        + r"(?:home|Users)/[^/\s]+)"
+        r"(?<![A-Za-z0-9:/.])(?:[A-Za-z]:[\\/]Users[\\/][^\\/\s]+|" + "/" + r"(?:home|Users)/[^/\s]+)"
     ),
 }
 

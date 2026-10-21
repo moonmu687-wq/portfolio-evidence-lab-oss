@@ -12,12 +12,16 @@ spec.loader.exec_module(exporter)
 def test_export_omits_runtime_files_and_git_history(tmp_path):
     root = tmp_path / "source"
     root.mkdir()
-    for name in exporter.ROOT_FILES | exporter.DOC_FILES | {
-        "scripts/export_public.py",
-        "scripts/check_public_tree.py",
-        "scripts/render_demo.py",
-        ".github/dependabot.yml",
-    }:
+    for name in (
+        exporter.ROOT_FILES
+        | exporter.DOC_FILES
+        | {
+            "scripts/export_public.py",
+            "scripts/check_public_tree.py",
+            "scripts/render_demo.py",
+            ".github/dependabot.yml",
+        }
+    ):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text("public fixture\n", encoding="utf8")
